@@ -12,7 +12,7 @@ export default function Write() {
   const dateParam = searchParams.get("date");
   const navigate = useNavigate();
   const entry = useEntryById(id ? Number(id) : undefined);
-  const { save } = useDiaryCRUD();
+  const { save, remove } = useDiaryCRUD();
 
   const [mood, setMood] = useState<MoodLevel>(3);
   const [tags, setTags] = useState<string[]>([]);
@@ -44,6 +44,14 @@ export default function Write() {
     });
     setSaved(true);
     setTimeout(() => navigate("/"), 600);
+  };
+
+  const handleDelete = async () => {
+    if (!id) return;
+    if (confirm("确定要删除这篇日记吗？")) {
+      await remove(Number(id));
+      navigate("/");
+    }
   };
 
   return (
@@ -158,13 +166,25 @@ export default function Write() {
         />
       </motion.section>
 
-      {/* Save */}
+      {/* Actions */}
       <motion.div
-        className="flex justify-end"
+        className="flex justify-between items-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
+        {id ? (
+          <button
+            type="button"
+            className="text-xs bg-transparent border-none cursor-pointer"
+            style={{ color: "#C4788A" }}
+            onClick={handleDelete}
+          >
+            删除日记
+          </button>
+        ) : (
+          <div />
+        )}
         <button
           type="button"
           className="px-8 py-2.5 rounded-full text-sm text-white border-none cursor-pointer font-normal transition-all hover:-translate-y-0.5"
