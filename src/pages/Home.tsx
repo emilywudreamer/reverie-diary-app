@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import MoodPicker from "../components/MoodPicker";
+import MoodChart from "../components/MoodChart";
 import DiaryCard from "../components/DiaryCard";
-import { useRecentEntries, useEntryByDate, useDiaryCRUD } from "../hooks/useDiary";
-import { useAllEntries } from "../hooks/useDiary";
+import { useRecentEntries, useEntryByDate, useDiaryCRUD, useAllEntries } from "../hooks/useDiary";
 import type { MoodLevel } from "../types";
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
@@ -178,6 +178,23 @@ export default function Home() {
           </div>
         </div>
       </motion.section>
+
+      {/* Weekly mood mini chart */}
+      {allEntries && allEntries.length > 0 && (
+        <motion.section
+          className="mt-6"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.35 }}
+        >
+          <div className="text-sm mb-3" style={{ color: "var(--text-light)" }}>
+            本周心情
+          </div>
+          <div className="glass p-4" style={{ borderRadius: "var(--radius)" }}>
+            <MoodChart entries={allEntries} />
+          </div>
+        </motion.section>
+      )}
 
       {/* Recent diaries */}
       {recentEntries && recentEntries.length > 0 && (
