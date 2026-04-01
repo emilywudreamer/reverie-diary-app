@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens from 紫灵's design ─── */
+:root {
+  --lavender: #C4B5E0;
+  --lavender-light: #E8E0F0;
+  --lavender-deep: #9B8EC4;
+  --pink: #F2C6D0;
+  --pink-light: #FAE4EA;
+  --moonblue: #B8CCE0;
+  --moonblue-light: #D6E4F0;
+  --cream: #FFF8F0;
+  --text: #4A3F5C;
+  --text-light: #8A7FA0;
+  --white: #FFFFFF;
+  --shadow: 0 8px 32px rgba(156, 136, 196, 0.15);
+  --shadow-sm: 0 4px 16px rgba(156, 136, 196, 0.1);
+  --radius: 20px;
+  --radius-sm: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: "Noto Sans SC", system-ui, sans-serif;
+  font-weight: 300;
+  color: var(--text);
+  min-height: 100dvh;
+  background: linear-gradient(
+    160deg,
+    #f0e6f6 0%,
+    #fff0f3 30%,
+    #e8f0fa 60%,
+    #f5eefa 100%
+  );
+  background-attachment: fixed;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--lavender-deep);
+  color: white;
+}
+
+/* Glass card base */
+.glass {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(196, 181, 224, 0.15);
+  border-radius: var(--radius);
+  transition: all 0.3s ease;
+}
+
+.glass:hover {
+  background: var(--white);
+  box-shadow: var(--shadow);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, var(--lavender-deep), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
