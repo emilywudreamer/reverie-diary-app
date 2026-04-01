@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useEntriesInRange } from "../hooks/useDiary";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEntriesInRange, useAllEntries } from "../hooks/useDiary";
 import { MOODS } from "../types";
+import DiaryCard from "../components/DiaryCard";
 
 const DAYS = ["日", "一", "二", "三", "四", "五", "六"];
 
@@ -17,6 +18,8 @@ function getMonthDays(year: number, month: number) {
 export default function Calendar() {
   const navigate = useNavigate();
   const [viewDate, setViewDate] = useState(new Date());
+  const [searchQuery, setSearchQuery] = useState("");
+  const allEntries = useAllEntries();
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
   const { startDay, totalDays } = getMonthDays(year, month);
@@ -45,6 +48,65 @@ export default function Calendar() {
       >
         日历 📅
       </motion.h2>
+
+      {/* Search */}
+      <motion.div
+        className="mb-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.05 }}
+      >
+        <input
+          type="text"
+          className="w-full glass px-4 py-2.5 text-sm outline-none"
+          style={{
+            borderRadius: "var(--radius)",
+            color: "var(--text)",
+            fontFamily: "inherit",
+          }}
+          placeholder="🔍 搜索日记内容..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </motion.div>
+
+      {/* Search results */}
+      <AnimatePresence>
+        {searchQuery.trim() && (
+          <motion.div
+            className="mb-6"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <div className="text-xs mb-2" style={{ color: "var(--text-light)" }}>
+              搜索结果
+            </div>
+            {(() => {
+              const q = searchQuery.trim().toLowerCase();
+              const results = (allEntries || []).filter(
+                (e) =>
+                  e.content.toLowerCase().includes(q) ||
+                  e.tags.some((t) => t.toLowerCase().includes(q))
+              );
+              if (results.length === 0) {
+                return (
+                  <p className="text-sm py-4 text-center" style={{ color: "var(--text-light)" }}>
+                    没有找到相关日记
+                  </p>
+                );
+              }
+              return results.slice(0, 5).map((e) => (
+                <DiaryCard
+                  key={e.id}
+                  entry={e}
+                  onClick={() => navigate(`/write/${e.id}`)}
+                />
+              ));
+            })()}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Month nav */}
       <motion.div
