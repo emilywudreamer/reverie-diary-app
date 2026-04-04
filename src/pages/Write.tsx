@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import MoodPicker from "../components/MoodPicker";
-import { useEntryById, useDiaryCRUD } from "../hooks/useDiary";
+import { useEntryById, useEntryByDate, useDiaryCRUD } from "../hooks/useDiary";
 import { EMOTION_TAGS } from "../types";
 import type { MoodLevel } from "../types";
 
@@ -12,12 +12,21 @@ export default function Write() {
   const dateParam = searchParams.get("date");
   const navigate = useNavigate();
   const entry = useEntryById(id ? Number(id) : undefined);
+  const existingEntryForDate = useEntryByDate(dateParam || "");
   const { save, remove } = useDiaryCRUD();
 
   const [mood, setMood] = useState<MoodLevel>(3);
   const [tags, setTags] = useState<string[]>([]);
   const [content, setContent] = useState("");
   const [saved, setSaved] = useState(false);
+
+  // If navigating via ?date= and an entry already exists for that date,
+  // redirect to edit mode to prevent duplicate entries
+  useEffect(() => {
+    if (!id && dateParam && existingEntryForDate?.id) {
+      navigate(`/write/${existingEntryForDate.id}`, { replace: true });
+    }
+  }, [id, dateParam, existingEntryForDate, navigate]);
 
   // Sync from loaded entry
   useEffect(() => {

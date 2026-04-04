@@ -4,6 +4,7 @@ import MoodPicker from "../components/MoodPicker";
 import MoodChart from "../components/MoodChart";
 import DiaryCard from "../components/DiaryCard";
 import { useRecentEntries, useEntryByDate, useDiaryCRUD, useAllEntries } from "../hooks/useDiary";
+import { MOODS } from "../types";
 import type { MoodLevel } from "../types";
 
 const todayStr = () => new Date().toISOString().slice(0, 10);
@@ -257,12 +258,7 @@ export default function Home() {
                   (a, b) => b[1] - a[1]
                 )[0];
                 if (!top) return "—";
-                const { emoji } =
-                  // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  { 5: { emoji: "😊" }, 4: { emoji: "🙂" }, 3: { emoji: "😐" }, 2: { emoji: "😔" }, 1: { emoji: "😢" } }[
-                    Number(top[0]) as 1 | 2 | 3 | 4 | 5
-                  ];
-                return emoji;
+                return MOODS[Number(top[0]) as MoodLevel].emoji;
               })(),
               label: "最常情绪",
             },
